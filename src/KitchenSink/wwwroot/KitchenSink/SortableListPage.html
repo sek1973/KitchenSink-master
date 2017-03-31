@@ -1,0 +1,170 @@
+﻿<link rel="import" href="/sys/polymer/polymer.html">
+<link rel="import" href="../juicy-draggable/juicy-draggable.html" />
+
+<template>
+    <script src="/sys/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="../juicy-draggable/juicy-draggable.html"/>
+    <head>
+        <title>Sortable list</title>
+        <meta charset="utf-8" />
+        <style>
+            #drag {
+                overflow: hidden;
+                padding-left: 20px;
+                min-height: 20px;                
+            }
+
+            .drag {
+                float: left;
+                cursor: move;
+            }
+
+            .drag-helper {
+                float: left;
+                margin: 0px 10px 10px 0px;
+                border: 1px dashed #333333;
+                cursor: move;
+            }
+
+            #drop {
+                clear: both;
+                padding: 0px;
+            }
+
+                #drop p {
+                    padding: 10px;
+                    margin: 0px;
+                }
+
+                #drop div.drop {
+                    overflow: hidden;
+                    min-height: 10px;
+                    padding: 1px;
+                }
+
+                #drop .drag {
+                    cursor: default;
+                }
+
+            .drag-helper {
+                display: none;
+            }
+
+                .drag-helper.dragging {
+                    display: block;
+                }
+
+            .drag-hover {
+                background-color: #eeffc5;                
+            }
+
+            juicy-draggable.fixed .drag {
+                left: 10px;
+            }
+
+            juicy-draggable.fixed-drop .drag {
+                left: 20px;
+            }
+        </style>
+    </head>
+    <template is="dom-bind">                
+        <p class="lead">Welcome to sortable list</p>                                    
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th />
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th />
+                        <th />
+                    </tr>
+                </thead>
+                <tbody>
+                    <template is="dom-repeat" items="{{model.Persons}}">
+                        <tr>                            
+                            <td>
+                                <div id="drop">
+                                    <!--to be replaced by more appropriate event-->
+                                    <div class="drop" value="{{item.DropTrigger$::click}}" onclick="-this.value">
+                                        <juicy-draggable position="static" dropselector="#drop div.drop" on-juicy-draggable-stop="itemDropped" value={{item.Ord$}}>
+                                            <div id="drag" class="drag">
+                                                <img src="/KitchenSink/images/reorder.svg" height="20" style="cursor: move;" draggable="false">
+                                            </div>
+                                        </juicy-draggable>
+                                    </div>
+                                </div>
+                            </td>                            
+                            <td>{{item.FirstName}}</td>
+                            <td>{{item.LastName}}</td>
+                            <td>
+                                <button class="btn btn-sm btn-default kitchensink-button-svg" style="padding:5px; border:3px"
+                                        disabled$="{{item.First}}" value="{{item.Up$::click}}" onmousedown="++this.value">
+                                    <template is="dom-if" if="{{!item.First}}" restamp>
+                                        <svg id="thumb-up" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                             viewBox="0 0 241.66 241.66" height="15"
+                                             value="{{item.Up$::click}}" onmousedown="++this.value">
+                                            <path value="{{item.Up$::click}}" onmousedown="++this.value"
+                                                  d="M208.632,133.579c10.345,0.472,19.121-7.677,19.574-18.203
+		                            c0.453-10.526-6.821-19.989-17.174-20.444l-68.73-8.63c0,0,14.323-23.958,14.323-59.455C156.625,3.184,139.72,0,129.778,0
+		                            c-7.821-0.003-9.927,15.151-9.927,15.151h-0.016c-1.771,9.717-4.077,18.203-12.09,33.827C98.775,66.49,86.559,64.847,72.297,80.445
+		                            c-2.517,2.747-5.899,7.281-9.195,12.86c-0.269,0.295-0.52,0.708-0.763,1.289c-0.294,0.692-0.646,1.172-0.956,1.812
+		                            c-0.546,1.003-1.083,2.006-1.611,3.059c-8.827,8.827-22.579,7.925-28.435,7.925c-11.746,0-17.898,6.825-17.898,17.898
+		                            l-0.004,81.828c0,12.423,5.083,16.613,17.903,16.613h17.898c9.011,0,16.067,5.166,26.848,8.949
+		                            c14.767,5.116,36.821,8.956,74.811,8.956c6.644,0,27.251,0.025,27.251,0.025c6.309,0,11.377-2.882,15.034-6.362
+		                            c1.392-1.323,2.844-3.245,3.465-6.995c0.101-0.581,0.209-3.017,0.193-3.346c0.477-10.728-6.008-14.612-9.682-15.835
+		                            c0.1-0.034,0.034-0.126,0.234-0.118l11.663,0.522c10.353,0.472,20.572-6.986,20.572-19.669c0-10.517-8.525-17.934-18.844-18.439
+		                            l6.184,0.287c10.352,0.455,19.103-7.694,19.582-18.22C226.998,142.959,218.977,134.052,208.632,133.579z" />
+                                        </svg>
+                                    </template>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-default kitchensink-button-svg" style="padding:5px; border:3px"
+                                        disabled$="{{item.Last}}" value="{{item.Down$::click}}" onmousedown="++this.value">
+                                    <template is="dom-if" if="{{!item.Last}}" restamp>
+                                        <svg id="thumb-down" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                             viewBox="0 0 293.664 293.664" height="15"
+                                             value="{{item.Down$::click}}" onmousedown="++this.value" disabled$="{{item.Last}}">
+                                            <path value="{{item.Down$::click}}" onmousedown="++this.value" disabled$="{{item.Last}}"
+                                                  d="M292.028,116.218c0-13.656-11.071-24.728-24.728-24.728h-5.52c7.023-4.362,11.703-12.142,11.703-21.018
+	                                        c0-13.656-11.071-24.728-24.728-24.728h-7.994c7.023-4.362,11.703-12.142,11.703-21.018C252.464,11.071,241.393,0,227.737,0
+	                                        c-11.885,0-124.134,0.001-126.185,0.001c-19.301,0-36.35,9.82-46.417,24.727H1.636v120.59H46.94
+	                                        c2.224,9.651,7.128,18.504,14.229,25.784c40.383,41.399,66.244,78.558,82.754,108.385c7.338,13.257,20.807,17.498,33.142,11.53
+	                                        c11.074-5.358,16.361-17.871,13.01-29.298c-5.82-19.907-11.949-43.293-29.095-75.029h92.113c13.656,0,24.728-11.071,24.728-24.728
+	                                        c0-8.876-4.679-16.656-11.703-21.018h1.18C280.956,140.945,292.028,129.874,292.028,116.218z" />
+                                        </svg>
+                                    </template>
+                                </button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+ </template>
+    <script>        
+        var script = document._currentScript || document.currentScript;
+        var template = script.previousElementSibling;
+
+        template.itemDropped = function (event) {
+            
+            try {
+                if (!event.detail.dropElement) {
+                    alert("no drop element!");
+                    return;
+                }
+
+                var target = event.currentTarget;
+                var drag = event.detail.dragElement;
+                var drop = event.detail.dropElement;
+                
+                drop.value = 0;
+                drop.value = target.value;                
+                drop.click.apply(drop);                
+            }
+            catch (e) {
+                alert("exception: " + e);
+            }
+            return;
+        };
+    </script>
+</template>
